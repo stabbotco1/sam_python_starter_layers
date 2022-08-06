@@ -1,0 +1,32 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "pythonLayersDemo"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-xrkydqoni7uf"
+s3_prefix = "pythonLayersDemo"
+region = "us-east-2"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+parameter_overrides = "ENVIRONMENT=\"beta\" APPLICATION=\"pythonLayersDemo\""
+
+[personal]
+[personal.deploy]
+[personal.deploy.parameters]
+stack_name = "sam-python-relative-imports"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-12poac2si3g6c"
+s3_prefix = "sam-python-relative-imports"
+region = "us-west-2"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+
+[beta]
+[beta.deploy]
+[beta.deploy.parameters]
+stack_name = "pythonLayersDemo"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-i69sklakyvjp"
+s3_prefix = "pythonLayersDemo"
+region = "us-east-2"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "ENVIRONMENT=\"beta\" APPLICATION=\"pythonLayersDemo\""
+image_repositories = []

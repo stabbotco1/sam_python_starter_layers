@@ -1,0 +1,14 @@
+  sam_app_lambda:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: sam_app/
+      Handler: sam_app.app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        sam_app_lambda:
+          Type: Api 
+          Properties:
+            Path: /sam_app
+            Method: get

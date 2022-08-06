@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: sam-python-relative-imports
+
+Parameters:
+  ENVIRONMENT:
+    Type: String
+    AllowedValues:
+      - 'prod'
+      - 'beta'
+      - 'dev_abbot'
+  APPLICATION:
+    Type: String
+    AllowedValues:
+      - 'pythonLayersDemo'
+
+Globals:
+  Function:
+    Timeout: 180
+    Runtime: python3.9
+    Handler: app.lambda_handler
+    Environment:
+      Variables:
+        APPLICATION: !Sub ${ENVIRONMENT}_${APPLICATION}
+        ENVIRONMENT: !Sub ${ENVIRONMENT}
+    Layers:
+      - !Ref libs
+      - !Ref utils
+      - arn:aws:lambda:us-east-2:336392948345:layer:AWSDataWrangler-Python39:7
+    MemorySize: 256
+    Tags:
+      Environment: !Sub ${ENVIRONMENT}
+      Application: !Sub ${ENVIRONMENT}_${APPLICATION}
+
+Resources:
+  SamApp:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: lambdas/sam_app/
+      Handler: sam_app.app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        samAppLambda:
+          Type: Api 
+          Properties:
+            Path: /samapp
+            Method: get
+
+  SamAppAPIGW:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: lambdas/sam_app_apigw/
+      Handler: sam_app.app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        samAppLambda:
+          Type: Api 
+          Properties:
+            Path: /samappapiwg
+            Method: get
+
+  libs:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: python-libs
+      Description: Lambda layer of shared Python libraries
+      ContentUri: ./libs
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: demo-python-lambda-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'sts:AssumeRole'
+                  - events:*
+                  - sns:*
+                  - logs:*
+                  - s3:*
+                Resource: '*'
+
+  utils:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: python-utils
+      Description: Lambda layer with internal utilities
+      ContentUri: ./utils
+
+
+# Outputs:
+#   HelloWorldApi:
+#     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+#   HelloWorldFunction:
+#     Description: "Hello World Lambda Function ARN"
+#     Value: !GetAtt HelloWorldFunction.Arn
+#   HelloWorldFunctionIamRole:
+#     Description: "Implicit IAM Role created for Hello World function"
+#     Value: !GetAtt HelloWorldFunctionRole.Arn
