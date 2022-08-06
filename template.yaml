@@ -53,7 +53,7 @@ Resources:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: lambdas/sam_app_apigw/
-      Handler: sam_app.app.lambda_handler
+      Handler: sam_app_apigw.app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:

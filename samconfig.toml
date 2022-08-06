@@ -3,7 +3,7 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "pythonLayersDemo"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-xrkydqoni7uf"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-i69sklakyvjp"
 s3_prefix = "pythonLayersDemo"
 region = "us-east-2"
 capabilities = "CAPABILITY_IAM"
@@ -29,4 +29,15 @@ s3_prefix = "pythonLayersDemo"
 region = "us-east-2"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "ENVIRONMENT=\"beta\" APPLICATION=\"pythonLayersDemo\""
+image_repositories = []
+
+[dev_abbot]
+[dev_abbot.deploy]
+[dev_abbot.deploy.parameters]
+stack_name = "pythonLayersDemo"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-i69sklakyvjp"
+s3_prefix = "pythonLayersDemo"
+region = "us-east-2"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "ENVIRONMENT=\"dev_abbot\" APPLICATION=\"pythonDemodev_abbot\""
 image_repositories = []
